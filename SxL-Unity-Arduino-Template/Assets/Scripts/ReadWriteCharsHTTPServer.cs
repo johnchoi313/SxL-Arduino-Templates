@@ -22,6 +22,10 @@ public class ReadWriteCharsHTTPServer : MonoBehaviour
     private int sendTimer = 0;
     private int sendTime = 100;  // Switch char every 1 second
     
+    // Queue for thread-safe color changes
+    private System.Collections.Generic.Queue<Color> colorQueue = new System.Collections.Generic.Queue<Color>();
+    private readonly object queueLock = new object();
+    
     void Start() {
         server = new HTTPServer(serverPort);
         
@@ -44,6 +48,17 @@ public class ReadWriteCharsHTTPServer : MonoBehaviour
             sendTimer = sendTime;
             charsSent += 1;
             currentChar = (charsSent % 2 == 0) ? 'a' : 'b';
+        }
+        
+        // Process queued color changes on main thread
+        lock (queueLock) {
+            while (colorQueue.Count > 0) {
+                Color color = colorQueue.Dequeue();
+                if (cube != null) {
+                    cube.GetComponent<Renderer>().material.color = color;
+                    Debug.Log($"[Main Thread] Cube color changed to {color}");
+                }
+            }
         }
     }
     
@@ -70,19 +85,19 @@ public class ReadWriteCharsHTTPServer : MonoBehaviour
         string cmd = context.Request.QueryString["cmd"];
         
         if (cmd == "c") {
-            // Change cube to red
-            if (cube != null) {
-                cube.GetComponent<Renderer>().material.color = Color.red;
+            // Queue color change for main thread (can't modify GameObject from background thread!)
+            lock (queueLock) {
+                colorQueue.Enqueue(Color.red);
             }
-            Debug.Log("[Server] Command: c - Cube set to RED");
+            Debug.Log("[Server] Command: c - Queued RED color");
             return "Cube set to RED";
         } 
         else if (cmd == "d") {
-            // Change cube to blue
-            if (cube != null) {
-                cube.GetComponent<Renderer>().material.color = Color.blue;
+            // Queue color change for main thread
+            lock (queueLock) {
+                colorQueue.Enqueue(Color.blue);
             }
-            Debug.Log("[Server] Command: d - Cube set to BLUE");
+            Debug.Log("[Server] Command: d - Queued BLUE color");
             return "Cube set to BLUE";
         }
         else {
