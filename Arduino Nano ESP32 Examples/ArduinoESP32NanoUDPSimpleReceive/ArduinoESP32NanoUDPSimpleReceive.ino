@@ -12,8 +12,8 @@
  */
 
 // WiFi credentials
-const char *ssid = "TP-Link_5E30";
-const char *password = "18506839";
+const char *ssid = "YOUR_WIFI_SSID"; //"TP-Link_5E30";
+const char *password = "YOUR_WIFI_PASSWORD"; //"18506839";
 
 // UDP settings
 WiFiUDP udp;

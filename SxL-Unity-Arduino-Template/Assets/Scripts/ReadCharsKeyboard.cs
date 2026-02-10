@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReadWriteCharsKeyboard : MonoBehaviour
+public class ReadCharsKeyboard : MonoBehaviour
 {
     [Header("Unity Objects")]
     public GameObject cube;
