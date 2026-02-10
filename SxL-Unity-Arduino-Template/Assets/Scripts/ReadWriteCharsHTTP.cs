@@ -68,10 +68,27 @@ public class ReadWriteCharsHTTP : MonoBehaviour
     }
     
     async Task<string> GetArduinoDataAsync() {
+        string url = arduinoURL + "/data";
         try {
-            return await httpClient.GetStringAsync(arduinoURL + "/data");
+            Debug.Log("========== HTTP REQUEST ==========");
+            Debug.Log("Method: GET");
+            Debug.Log("URL: " + url);
+            Debug.Log("Target: Arduino Server");
+            
+            var startTime = System.DateTime.Now;
+            string response = await httpClient.GetStringAsync(url);
+            var elapsed = (System.DateTime.Now - startTime).TotalMilliseconds;
+            
+            Debug.Log("Response: " + response);
+            Debug.Log("Status: 200 OK");
+            Debug.Log("Time: " + elapsed.ToString("F0") + "ms");
+            Debug.Log("==================================");
+            
+            return response;
         } catch (System.Exception e) {
-            Debug.LogWarning("HTTP GET error: " + e.Message);
+            Debug.LogError("HTTP GET error: " + e.Message);
+            Debug.Log("Status: Error");
+            Debug.Log("==================================");
             return null;
         }
     }
@@ -92,9 +109,26 @@ public class ReadWriteCharsHTTP : MonoBehaviour
     
     async Task<string> SendCommandAsync(string url) {
         try {
-            return await httpClient.GetStringAsync(url);
+            Debug.Log("========== HTTP REQUEST ==========");
+            Debug.Log("Method: GET");
+            Debug.Log("URL: " + url);
+            Debug.Log("Target: Arduino Server");
+            Debug.Log("Action: Send command");
+            
+            var startTime = System.DateTime.Now;
+            string response = await httpClient.GetStringAsync(url);
+            var elapsed = (System.DateTime.Now - startTime).TotalMilliseconds;
+            
+            Debug.Log("Response: " + response);
+            Debug.Log("Status: 200 OK");
+            Debug.Log("Time: " + elapsed.ToString("F0") + "ms");
+            Debug.Log("==================================");
+            
+            return response;
         } catch (System.Exception e) {
             Debug.LogError("HTTP command error: " + e.Message);
+            Debug.Log("Status: Error");
+            Debug.Log("==================================");
             return null;
         }
     }

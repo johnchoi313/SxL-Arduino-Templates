@@ -425,30 +425,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1512580134}
-  - component: {fileID: 1512580133}
+  - component: {fileID: 1512580135}
   m_Layer: 0
-  m_Name: HTTP
+  m_Name: HTTPServer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1512580133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1512580132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb287159775f5ba4b8d500a2e5ba2f74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arduinoIP: 192.168.0.101
-  arduinoPort: 80
-  cube: {fileID: 1201945589}
-  pollInterval: 0.5
 --- !u!4 &1512580134
 Transform:
   m_ObjectHideFlags: 0
@@ -464,6 +448,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1512580135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512580132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e06b4fcfa0ca04498c126bee8d9a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverPort: 8080
+  cube: {fileID: 1201945589}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

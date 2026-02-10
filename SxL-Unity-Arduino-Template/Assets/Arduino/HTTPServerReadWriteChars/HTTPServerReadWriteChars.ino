@@ -2,8 +2,8 @@
 #include <WebServer.h>
 
 // WiFi credentials
-const char *ssid = "TP-Link_5E30";
-const char *password = "18506839";
+const char *ssid = "YOUR_WIFI_SSID"; //"TP-Link_5E30";
+const char *password = "YOUR_WIFI_PASSWORD"; //"18506839";
 
 // HTTP Server
 WebServer server(80);
@@ -71,31 +71,57 @@ void handleRoot() {
 // Data endpoint - Unity polls this to get 'a' or 'b'
 void handleData() {
   String response = String(currentChar);
+  String clientIP = server.client().remoteIP().toString();
+  
+  Serial.println("========== HTTP REQUEST ==========");
+  Serial.println("Method: GET");
+  Serial.println("Endpoint: /data");
+  Serial.println("Client IP: " + clientIP);
+  Serial.println("Response: " + response);
+  Serial.println("Status: 200 OK");
+  Serial.println("==================================");
+  
   server.send(200, "text/plain", response);
-  Serial.println("→ Sent: " + response);
 }
 
 // Command endpoint - Unity sends 'c' or 'd'
 void handleCommand() {
+  String clientIP = server.client().remoteIP().toString();
+  
+  Serial.println("========== HTTP REQUEST ==========");
+  Serial.println("Method: GET");
+  Serial.println("Endpoint: /command");
+  Serial.println("Client IP: " + clientIP);
+  
   if (server.hasArg("cmd")) {
     String cmd = server.arg("cmd");
+    Serial.println("Parameter: cmd=" + cmd);
     
     if (cmd == "c") {
       digitalWrite(ledPin, HIGH);
       server.send(200, "text/plain", "LED ON");
-      Serial.println("← Received: c (LED ON)");
+      Serial.println("Action: LED turned ON");
+      Serial.println("Response: LED ON");
+      Serial.println("Status: 200 OK");
     } 
     else if (cmd == "d") {
       digitalWrite(ledPin, LOW);
       server.send(200, "text/plain", "LED OFF");
-      Serial.println("← Received: d (LED OFF)");
+      Serial.println("Action: LED turned OFF");
+      Serial.println("Response: LED OFF");
+      Serial.println("Status: 200 OK");
     } 
     else {
       server.send(400, "text/plain", "Invalid command");
+      Serial.println("Error: Invalid command");
+      Serial.println("Status: 400 Bad Request");
     }
   } else {
     server.send(400, "text/plain", "Missing cmd parameter");
+    Serial.println("Error: Missing cmd parameter");
+    Serial.println("Status: 400 Bad Request");
   }
+  Serial.println("==================================");
 }
 
 // 404 handler
