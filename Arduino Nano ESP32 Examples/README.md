@@ -1,16 +1,146 @@
 # Arduino Nano ESP32 Examples
 
-Simple Arduino-to-Arduino communication examples using the Arduino Nano ESP32.
+Comprehensive collection of Arduino Nano ESP32 examples - from basic GPIO to wireless communication.
 
 ## 📋 Overview
 
-These examples demonstrate wireless communication between two Arduino Nano ESP32 boards using WiFi. Perfect for learning IoT basics and building distributed sensor networks.
+This folder contains **10 complete examples** covering everything from beginner-friendly LED blink to advanced wireless communication between multiple Arduino boards. Perfect for learning Arduino Nano ESP32 capabilities step-by-step.
+
+## 📊 Quick Reference
+
+| # | Example | Category | Difficulty | Hardware Needed |
+|---|---------|----------|------------|-----------------|
+| 1 | Blink LED | Basic | ⭐ Beginner | LED |
+| 2 | Button Controls LED | Basic | ⭐ Beginner | Button, LED |
+| 3 | Button Toggles LED | Basic | ⭐⭐ Beginner+ | Button, LED |
+| 4 | HID Keyboard + Mouse | HID | ⭐⭐⭐ Intermediate | Button, LED |
+| 5 | Servo Sweep | Servo | ⭐⭐ Beginner+ | Servo motor |
+| 6 | Servo Potentiometer | Servo | ⭐⭐ Beginner+ | Servo, Potentiometer |
+| 7 | UDP Send/Receive | WiFi | ⭐⭐⭐ Intermediate | 2 Arduinos, WiFi |
+| 8 | HTTP Client/Server | WiFi | ⭐⭐⭐ Intermediate | 2 Arduinos, WiFi |
 
 ---
 
-## 🌐 Examples
+## 📚 Example Categories
 
-### 1. **UDP Simple Send/Receive**
+### 🔰 **Basic Examples** - Getting Started
+Simple examples to learn GPIO basics
+
+### ⌨️ **HID Examples** - USB Input Devices  
+Arduino as keyboard/mouse using USB HID
+
+### 🎛️ **Servo Examples** - Motor Control
+Control servo motors with different inputs
+
+### 🌐 **Communication Examples** - Wireless Networking
+Arduino-to-Arduino communication via WiFi
+
+---
+
+## 🔰 Basic Examples
+
+Perfect for beginners learning Arduino basics.
+
+### 1. **Blink LED**
+**Folder**: `BlinkLED`
+
+**What it does**: Classic Arduino example - blinks an LED on and off every second.
+
+**Hardware**:
+- LED at pin 4
+
+**Learn**: Basic `digitalWrite()`, `delay()`, and Serial Monitor
+
+---
+
+### 2. **Button Controls LED**
+**Folder**: `DigitalInputPullupButtonLED`
+
+**What it does**: Press button to turn LED on, release to turn it off (direct control).
+
+**Hardware**:
+- Button at pin 2 (internal pullup)
+- LED at pin 4
+
+**Learn**: `digitalRead()`, `INPUT_PULLUP`, button debouncing basics
+
+---
+
+### 3. **Button Toggles LED**
+**Folder**: `DigitalInputPullupButtonToggleLED`
+
+**What it does**: Each button press toggles LED state (on ↔ off), like a light switch.
+
+**Hardware**:
+- Button at pin 2 (internal pullup)
+- LED at pin 4
+
+**Learn**: State management, toggle logic, proper debouncing with `delay(150)`
+
+---
+
+## ⌨️ HID Examples
+
+Turn your Arduino into a USB input device (keyboard/mouse).
+
+### 4. **HID Keyboard + Mouse with Button Toggle**
+**Folder**: `HIDKeyboardMouseDigitalInputPullupButtonToggleLED`
+
+**What it does**: 
+- Press button to activate/deactivate HID mode
+- **Mouse**: Moves in a smooth figure-8 pattern (Lissajous curve)
+- **Keyboard**: Types "A hello" and "B world" alternating every 3 seconds
+- LED shows active state
+
+**Hardware**:
+- Button at pin 2
+- LED at pin 4
+
+**Learn**: 
+- `USBHIDKeyboard` and `USBHIDMouse` libraries
+- Smooth mouse movement with error accumulation
+- Trigonometric motion (sin waves)
+- Multi-function toggle system
+
+**Note**: Arduino will appear as both keyboard and mouse to your computer!
+
+---
+
+## 🎛️ Servo Examples
+
+Control servo motors with sweep patterns or analog input.
+
+### 5. **Servo Sweep**
+**Folder**: `ServoSweep`
+
+**What it does**: Continuously sweeps servo from 0° to 180° and back.
+
+**Hardware**:
+- Servo motor at pin 9
+- Servo power: 5V (external power recommended)
+
+**Learn**: `Servo.h` library, `attach()`, `write()`, basic servo control
+
+---
+
+### 6. **Servo Potentiometer Knob**
+**Folder**: `ServoPotentiometerKnob`
+
+**What it does**: Potentiometer directly controls servo position (0-180°).
+
+**Hardware**:
+- Potentiometer at A0
+- Servo motor at pin 9
+
+**Learn**: `analogRead()`, `map()` function, real-time servo control
+
+---
+
+## 🌐 Communication Examples
+
+Wireless Arduino-to-Arduino communication via WiFi.
+
+### 7. **UDP Simple Send/Receive**
 
 **Folders**: `ArduinoESP32NanoUDPSimpleSend` + `ArduinoESP32NanoUDPSimpleReceive`
 
@@ -43,7 +173,7 @@ These examples demonstrate wireless communication between two Arduino Nano ESP32
 
 ---
 
-### 2. **HTTP Simple Client/Server**
+### 8. **HTTP Simple Client/Server**
 
 **Folders**: `ArduinoESP32NanoHTTPSimpleClient` + `ArduinoESP32NanoHTTPSimpleServer`
 
@@ -78,15 +208,65 @@ These examples demonstrate wireless communication between two Arduino Nano ESP32
 
 ## 🔧 Hardware Requirements
 
-### For Each Arduino:
-- **Arduino Nano ESP32** board
-- **LED** + 220Ω resistor (optional if using built-in LED)
-- **For Sender/Client only**:
-  - 10kΩ potentiometer
-  - Push button
-  - Breadboard and jumper wires
+### What You'll Need (Depending on Example):
 
-### Wiring:
+**All Examples**:
+- **Arduino Nano ESP32** board
+- **USB-C cable** for programming
+
+**Basic Examples (1-3)**:
+- LED + 220Ω resistor (or use built-in LED at pin 4)
+- Push button (examples 2-3)
+
+**HID Example (4)**:
+- Push button
+- LED + 220Ω resistor
+
+**Servo Examples (5-6)**:
+- Servo motor (e.g., SG90 or similar)
+- External 5V power supply (recommended for servo)
+- Potentiometer 10kΩ (example 6 only)
+
+**Communication Examples (7-8)**:
+- **2x Arduino Nano ESP32** boards
+- 10kΩ potentiometer
+- Push button
+- LED + 220Ω resistor
+- WiFi network (2.4GHz)
+
+**Always Useful**:
+- Breadboard
+- Jumper wires
+- Multimeter (for debugging)
+
+### Wiring Examples:
+
+**Basic LED + Button** (Examples 1-3, 4):
+```
+LED:
+  - Anode (+) → Pin 4
+  - Cathode (-) → 220Ω resistor → GND
+
+Button (if needed):
+  - One side → Pin 2
+  - Other side → GND
+  (Internal pullup enabled in code)
+```
+
+**Servo Motor** (Examples 5-6):
+```
+Servo:
+  - Red wire → 5V (external power recommended)
+  - Brown/Black wire → GND
+  - Orange/Yellow wire → Pin 9
+
+Potentiometer (example 6):
+  - VCC → 3.3V
+  - GND → GND
+  - Signal → A0
+```
+
+**Communication Setup** (Examples 7-8):
 
 **Sender/Client Arduino**:
 ```
@@ -111,6 +291,12 @@ LED:
   - Anode (+) → Pin 4
   - Cathode (-) → 220Ω resistor → GND
 ```
+
+### Wiring Diagram:
+
+![Arduino ESP32 Nano Examples Wiring](Arduino%20ESP32%20Nano%20Examples%20Wiring.png)
+
+*Complete wiring diagram showing Sender/Client setup with potentiometer, button, and LED.*
 
 ---
 

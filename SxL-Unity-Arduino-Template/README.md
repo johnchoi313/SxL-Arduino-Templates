@@ -8,6 +8,10 @@ All examples follow a consistent pattern:
 - **Arduino → Unity**: Sends 'a' or 'b' characters to change cube color (Red/Blue)
 - **Unity → Arduino**: Sends 'c' or 'd' commands to control LED (ON/OFF)
 
+![Unity Project Screenshot](Unity.png)
+
+*Unity editor showing the ReadWriteCharsKeyboard scene with the communication scripts and cube GameObject.*
+
 ---
 
 ## 🔌 Communication Methods

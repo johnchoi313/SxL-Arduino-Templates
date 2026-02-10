@@ -19,18 +19,32 @@ Complete Unity project with multiple communication methods between Unity and Ard
 
 **Pattern**: Arduino sends 'a'/'b' to change Unity cube color, Unity sends 'c'/'d' to control Arduino LED.
 
+![Unity Project](SxL-Unity-Arduino-Template/Unity.png)
+
 [📖 Full Unity Documentation →](SxL-Unity-Arduino-Template/README.md)
 
 ---
 
-### 🤖 **Arduino ↔ Arduino Communication**
+### 🤖 **Arduino Nano ESP32 Standalone Examples**
 **Folder**: `Arduino Nano ESP32 Examples/`
 
-Simple Arduino-to-Arduino wireless communication examples:
-- **UDP Send/Receive** - Fast, low-latency wireless control
-- **HTTP Client/Server** - RESTful API between Arduinos
+Complete collection of **10 Arduino examples** from basics to advanced:
 
-**Hardware**: Sender has potentiometer + button, Receiver has LED. Control brightness and on/off wirelessly!
+**🔰 Basic (3 examples)**:
+- Blink LED - Classic first program
+- Button Controls LED - Direct input/output
+- Button Toggles LED - State management with debouncing
+
+**⌨️ HID (1 example)**:
+- HID Keyboard + Mouse - Arduino as USB input device (figure-8 mouse, typing)
+
+**🎛️ Servo (2 examples)**:
+- Servo Sweep - Automatic 0-180° motion
+- Servo Potentiometer - Manual servo control
+
+**🌐 Communication (4 examples)**:
+- UDP Send/Receive - Fast wireless Arduino-to-Arduino
+- HTTP Client/Server - RESTful API between Arduinos
 
 [📖 Full Arduino Documentation →](Arduino%20Nano%20ESP32%20Examples/README.md)
 
@@ -44,11 +58,10 @@ Simple Arduino-to-Arduino wireless communication examples:
 3. Upload corresponding Arduino sketch from `Assets/Arduino/`
 4. Configure and play!
 
-### Option 2: Arduino-to-Arduino
-1. Wire up two Arduino Nano ESP32 boards
-2. Upload receiver/server sketch first, note IP
-3. Upload sender/client sketch with receiver's IP
-4. Control LED wirelessly with potentiometer and button!
+### Option 2: Arduino Standalone Examples
+1. **Beginners**: Start with `BlinkLED` or `DigitalInputPullupButtonLED`
+2. **Intermediate**: Try `ServoSweep` or `HIDKeyboardMouse` 
+3. **Advanced**: Wire up 2 Arduinos for `UDP` or `HTTP` communication
 
 ---
 
@@ -68,11 +81,18 @@ Simple Arduino-to-Arduino wireless communication examples:
 - **Arduino Nano ESP32** (1 for Unity, 2 for Arduino-to-Arduino)
 - **USB-C cable** (for Serial/HID/programming)
 - **WiFi network** (2.4GHz for UDP/HTTP)
-- **Optional for Arduino examples**:
-  - Potentiometer (10kΩ)
-  - Push button
-  - LED + 220Ω resistor
+- **For Arduino standalone examples**:
+  - LED + 220Ω resistor (Basic examples)
+  - Push button (Basic, HID examples)
+  - Potentiometer 10kΩ (Servo, WiFi examples)
+  - Servo motor (Servo examples)
   - Breadboard and wires
+
+### Wiring Reference:
+
+![Arduino Wiring Diagram](Arduino%20Nano%20ESP32%20Examples/Arduino%20ESP32%20Nano%20Examples%20Wiring.png)
+
+*See [Arduino Examples folder](Arduino%20Nano%20ESP32%20Examples/) for complete wiring details.*
 
 ---
 
@@ -92,29 +112,39 @@ SxL-Arduino-Templates/
 │   │   │   └── HTTPClientReadWriteChars/
 │   │   ├── Scripts/                    # Unity C# scripts
 │   │   └── Scenes/                     # Unity scenes
-└── Arduino Nano ESP32 Examples/        # Arduino-to-Arduino examples
+└── Arduino Nano ESP32 Examples/        # Arduino standalone examples (10 total)
     ├── README.md                       # Arduino documentation
-    ├── ArduinoESP32NanoUDPSimpleSend/
-    ├── ArduinoESP32NanoUDPSimpleReceive/
-    ├── ArduinoESP32NanoHTTPSimpleClient/
-    └── ArduinoESP32NanoHTTPSimpleServer/
+    ├── BlinkLED/                       # Basic: LED blink
+    ├── DigitalInputPullupButtonLED/    # Basic: Button → LED
+    ├── DigitalInputPullupButtonToggleLED/  # Basic: Toggle LED
+    ├── HIDKeyboardMouseDigitalInputPullupButtonToggleLED/  # HID device
+    ├── ServoSweep/                     # Servo: Auto sweep
+    ├── ServoPotentiometerKnob/         # Servo: Manual control
+    ├── ArduinoESP32NanoUDPSimpleSend/  # WiFi: UDP sender
+    ├── ArduinoESP32NanoUDPSimpleReceive/  # WiFi: UDP receiver
+    ├── ArduinoESP32NanoHTTPSimpleClient/  # WiFi: HTTP client
+    └── ArduinoESP32NanoHTTPSimpleServer/  # WiFi: HTTP server
 ```
 
 ---
 
 ## 🎯 Learning Path
 
-### Beginner
-1. Start with **Unity Serial** example - simplest setup
-2. Try **Arduino UDP Send/Receive** - learn wireless basics
+### Beginner (Start Here!)
+1. **Arduino Blink LED** - Your first Arduino program
+2. **Arduino Button LED** - Learn digital input/output
+3. **Unity Serial** - Simplest Unity-Arduino connection
 
 ### Intermediate
-3. **Unity UDP** - add wireless to Unity
-4. **Unity HTTP Client** - learn REST APIs
+4. **Arduino Servo Examples** - Control motors
+5. **Arduino UDP Send/Receive** - Learn wireless basics
+6. **Unity UDP** - Add wireless to Unity
+7. **Unity HTTP Client** - REST APIs
 
 ### Advanced
-5. **Unity HTTP Server** - Unity serves multiple Arduinos
-6. **HID Keyboard** - custom input devices
+8. **Arduino HID Keyboard/Mouse** - Custom USB input devices
+9. **Unity HTTP Server** - Unity serves multiple Arduinos
+10. **Multi-Arduino Networks** - Build distributed systems
 
 ---
 
