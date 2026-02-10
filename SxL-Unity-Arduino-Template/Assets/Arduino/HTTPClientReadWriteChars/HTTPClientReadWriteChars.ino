@@ -77,13 +77,15 @@ void pollUnityData() {
     Serial.println("Response: " + response);
     Serial.println("Status: " + String(httpCode) + " OK");
     
-    // Control LED based on response
+    // Control LED and send command back based on response
     if (response == "a") {
       digitalWrite(ledPin, HIGH);
       Serial.println("Action: LED ON");
+      sendCommandToUnity('c');  // Unity sent 'a' → send 'c' → Cube RED
     } else if (response == "b") {
       digitalWrite(ledPin, LOW);
       Serial.println("Action: LED OFF");
+      sendCommandToUnity('d');  // Unity sent 'b' → send 'd' → Cube BLUE
     }
   } else {
     Serial.println("Error: " + String(httpCode));
