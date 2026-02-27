@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Button Controller XR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #xr-buttons-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 80%, transparent 100%);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #ar-button, #vr-button {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 22px 40px;
+            font-size: 1.4em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 3px solid rgba(247, 181, 181, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+            display: none;
+            pointer-events: auto;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #ar-button:active, #vr-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        @media (hover: hover) {
+            #ar-button:hover, #vr-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            #ar-button, #vr-button {
+                font-size: 1.3em;
+                padding: 20px 30px;
+            }
+        }
+
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 350px;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        #info-panel.ar-active {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            #info-panel {
+                max-width: calc(100% - 40px);
+                padding: 15px;
+            }
+
+            #info-panel h2 {
+                font-size: 1.3em;
+            }
+
+            .info-item {
+                font-size: 0.95em;
+            }
+        }
+
+        #info-panel h2 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .info-item {
+            margin: 10px 0;
+            color: #666;
+            font-size: 1em;
+        }
+
+        .info-item strong {
+            color: #333;
+        }
+
+        .unity-status {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .unity-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .unity-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #instructions {
+            position: fixed;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            text-align: center;
+            display: none;
+            z-index: 998;
+            max-width: 90%;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            #instructions {
+                bottom: 160px;
+                font-size: 1em;
+                padding: 12px 25px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #xr-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1001;
+            display: none;
+        }
+
+        #xr-overlay h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        #xr-overlay button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <div id="info-panel">
+        <h2>AR Smart Controller</h2>
+        <div class="info-item">
+            <strong>Clicks:</strong> <span id="clickCount">0</span>
+        </div>
+        <div class="info-item">
+            <strong>Current Color:</strong> <span id="currentColor">#3498db</span>
+        </div>
+        <div class="color-preview" id="colorPreview"></div>
+        <div id="unityStatus" class="unity-status unity-disconnected">
+            Unity: Disconnected
+        </div>
+        <div class="info-item" style="margin-top: 15px; font-size: 0.9em;">
+            <strong>Instructions:</strong> Tap on the cube in AR to change its color!
+        </div>
+    </div>
+
+    <div id="xr-buttons-container">
+        <button id="ar-button">🥽 Enter AR</button>
+        <button id="vr-button">🎮 Enter VR</button>
+    </div>
+    
+    <div id="instructions">
+        <p>📍 Tap on a surface to place the cube</p>
+    </div>
+
+    <div id="reticle-indicator" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid white; border-radius: 50%; pointer-events: none; display: none; z-index: 1002; box-shadow: 0 0 20px rgba(255,255,255,0.8);"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { VRButton } from 'three/addons/webxr/VRButton.js';
+        import { ARButton } from 'three/addons/webxr/ARButton.js';
+
+        const colors = [
+            '#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6',
+            '#1abc9c', '#e67e22', '#34495e', '#16a085', '#c0392b'
+        ];
+
+        let currentColorIndex = 0;
+        let clickCount = 0;
+        let unityHost = 'localhost';
+        let unityPort = 4000;
+
+        // Three.js setup
+        const container = document.getElementById('container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.xr.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 2, 1);
+        scene.add(directionalLight);
+
+        // Create interactive cube
+        const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: colors[currentColorIndex],
+            metalness: 0.3,
+            roughness: 0.4
+        });
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, 1.5, -2);
+        scene.add(cube);
+
+        // Reticle for AR placement
+        const reticleGeometry = new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
+        const reticleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+        const reticle = new THREE.Mesh(reticleGeometry, reticleMaterial);
+        reticle.matrixAutoUpdate = false;
+        reticle.visible = false;
+        scene.add(reticle);
+
+        let hitTestSource = null;
+        let hitTestSourceRequested = false;
+        let localReferenceSpace = null;
+        let viewerSpace = null;
+        let cubePlaced = false;
+
+        // Add a subtle rotation animation
+        let rotationSpeed = 0.005;
+        
+        // Raycaster for interactions
+        const raycaster = new THREE.Raycaster();
+        const tempMatrix = new THREE.Matrix4();
+
+        // WebXR Controllers
+        const controller1 = renderer.xr.getController(0);
+        controller1.addEventListener('select', onSelect);
+        scene.add(controller1);
+
+        const controller2 = renderer.xr.getController(1);
+        controller2.addEventListener('select', onSelect);
+        scene.add(controller2);
+
+        // Check WebXR support
+        if ('xr' in navigator) {
+            navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
+                if (supported) {
+                    document.getElementById('ar-button').style.display = 'block';
+                    document.getElementById('ar-button').onclick = () => {
+                        navigator.xr.requestSession('immersive-ar', {
+                            requiredFeatures: ['hit-test'],
+                            optionalFeatures: ['dom-overlay'],
+                            domOverlay: { root: document.body }
+                        }).then((session) => {
+                            renderer.xr.setSession(session);
+                        });
+                    };
+                } else {
+                    console.log('AR not supported');
+                }
+            });
+
+            navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+                if (supported) {
+                    document.getElementById('vr-button').style.display = 'block';
+                    document.getElementById('vr-button').onclick = () => {
+                        navigator.xr.requestSession('immersive-vr').then((session) => {
+                            renderer.xr.setSession(session);
+                        });
+                    };
+                }
+            });
+        }
+
+        // Session start/end handlers (following official WebXR sample pattern)
+        renderer.xr.addEventListener('sessionstart', async () => {
+            console.log('XR Session started');
+            const session = renderer.xr.getSession();
+            
+            // Hide AR/VR buttons
+            document.getElementById('xr-buttons-container').style.display = 'none';
+            
+            if (session.mode === 'immersive-ar') {
+                document.getElementById('info-panel').classList.add('ar-active');
+                
+                // Request viewer space for hit testing (like official sample)
+                viewerSpace = await session.requestReferenceSpace('viewer');
+                hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
+                console.log('Hit test source created from viewer space');
+                
+                // Get local reference space
+                localReferenceSpace = await session.requestReferenceSpace('local');
+                
+                // Hide cube, show reticle for placement
+                cube.visible = false;
+                reticle.visible = false;
+                cubePlaced = false;
+                
+                document.getElementById('instructions').innerHTML = '<p>📍 Move your device to find a surface</p>';
+                document.getElementById('instructions').style.display = 'block';
+                document.getElementById('reticle-indicator').style.display = 'block';
+            }
+        });
+
+        renderer.xr.addEventListener('sessionend', () => {
+            console.log('XR Session ended');
+            
+            // Show AR/VR buttons again
+            document.getElementById('xr-buttons-container').style.display = 'flex';
+            
+            // Restore info panel
+            document.getElementById('info-panel').classList.remove('ar-active');
+            
+            document.getElementById('instructions').style.display = 'none';
+            document.getElementById('reticle-indicator').style.display = 'none';
+            
+            if (hitTestSource) {
+                hitTestSource.cancel();
+                hitTestSource = null;
+            }
+            
+            viewerSpace = null;
+            localReferenceSpace = null;
+            cube.visible = true;
+            cube.position.set(0, 1.5, -2);
+            cubePlaced = false;
+        });
+
+        // Handle select (tap/click) on cube or placement
+        function onSelect(event) {
+            if (renderer.xr.isPresenting) {
+                const session = renderer.xr.getSession();
+                
+                // AR/VR mode - interact with cube
+                if (cubePlaced) {
+                    const controller = event.target;
+                    tempMatrix.identity().extractRotation(controller.matrixWorld);
+                    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+                    raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+
+                    const intersects = raycaster.intersectObject(cube);
+                    if (intersects.length > 0) {
+                        changeCubeColor();
+                        console.log('Controller select - color changed!');
+                    }
+                }
+            }
+        }
+
+        // Mouse click for non-XR mode
+        window.addEventListener('click', (event) => {
+            if (!renderer.xr.isPresenting) {
+                const mouse = new THREE.Vector2();
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObject(cube);
+
+                if (intersects.length > 0) {
+                    changeCubeColor();
+                }
+            }
+        });
+
+        // Touch support for mobile (non-AR placement and interaction)
+        let touchStarted = false;
+        window.addEventListener('touchstart', (event) => {
+            touchStarted = true;
+        });
+
+        window.addEventListener('touchend', (event) => {
+            if (touchStarted && !renderer.xr.isPresenting) {
+                const touch = event.changedTouches[0];
+                const mouse = new THREE.Vector2();
+                mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObject(cube);
+
+                if (intersects.length > 0) {
+                    changeCubeColor();
+                }
+            }
+            touchStarted = false;
+        });
+
+        // Touch handler for AR mode - placement and interaction (like official sample)
+        window.addEventListener('touchend', (event) => {
+            if (renderer.xr.isPresenting) {
+                const session = renderer.xr.getSession();
+                if (session.mode === 'immersive-ar') {
+                    if (!cubePlaced && reticle.visible) {
+                        // Place cube at reticle position (like official sample does with flowers)
+                        cube.position.setFromMatrixPosition(reticle.matrix);
+                        cube.visible = true;
+                        cubePlaced = true;
+                        document.getElementById('instructions').innerHTML = '<p>✨ Tap the cube to change its color!</p>';
+                        document.getElementById('reticle-indicator').style.display = 'none';
+                        console.log('Cube placed at:', cube.position);
+                    } else if (cubePlaced) {
+                        // Check if tapping on cube
+                        const touch = event.changedTouches[0];
+                        const mouse = new THREE.Vector2();
+                        mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                        mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+                        raycaster.setFromCamera(mouse, camera);
+                        const intersects = raycaster.intersectObject(cube);
+
+                        if (intersects.length > 0) {
+                            changeCubeColor();
+                            console.log('Cube tapped - color changed!');
+                        }
+                    }
+                }
+            }
+        });
+
+        async function changeCubeColor() {
+            currentColorIndex = (currentColorIndex + 1) % colors.length;
+            const newColor = colors[currentColorIndex];
+            
+            // Update cube color
+            cube.material.color.set(newColor);
+            
+            // Update UI
+            document.getElementById('currentColor').textContent = newColor;
+            document.getElementById('colorPreview').style.backgroundColor = newColor;
+
+            // Send to server and Unity
+            try {
+                const response = await fetch('/api/click', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ color: newColor })
+                });
+                
+                const state = await response.json();
+                clickCount = state.clickCount;
+                document.getElementById('clickCount').textContent = clickCount;
+                
+                checkUnityStatus();
+            } catch (error) {
+                console.error('Error updating state:', error);
+            }
+
+            // Visual feedback
+            const originalScale = cube.scale.clone();
+            cube.scale.multiplyScalar(1.2);
+            setTimeout(() => {
+                cube.scale.copy(originalScale);
+            }, 100);
+        }
+
+        async function checkUnityStatus() {
+            try {
+                const response = await fetch('/api/unity/status');
+                const data = await response.json();
+                updateUnityStatusDisplay(data.connected);
+            } catch (error) {
+                console.error('Error checking Unity status:', error);
+                updateUnityStatusDisplay(false);
+            }
+        }
+
+        function updateUnityStatusDisplay(connected) {
+            const statusEl = document.getElementById('unityStatus');
+            if (connected) {
+                statusEl.textContent = `Unity: Connected (${unityHost}:${unityPort})`;
+                statusEl.className = 'unity-status unity-connected';
+            } else {
+                statusEl.textContent = 'Unity: Disconnected';
+                statusEl.className = 'unity-status unity-disconnected';
+            }
+        }
+
+        async function loadState() {
+            try {
+                const response = await fetch('/api/state');
+                const state = await response.json();
+                clickCount = state.clickCount;
+                document.getElementById('clickCount').textContent = clickCount;
+                document.getElementById('currentColor').textContent = state.color;
+                document.getElementById('colorPreview').style.backgroundColor = state.color;
+                
+                currentColorIndex = colors.indexOf(state.color);
+                if (currentColorIndex === -1) currentColorIndex = 0;
+                
+                cube.material.color.set(state.color);
+            } catch (error) {
+                console.error('Error loading state:', error);
+            }
+        }
+
+        // Animation loop (following official sample pattern)
+        function animate() {
+            renderer.setAnimationLoop((timestamp, frame) => {
+                // Gentle rotation (only when not in AR)
+                if (!renderer.xr.isPresenting) {
+                    cube.rotation.y += rotationSpeed;
+                    cube.rotation.x += rotationSpeed * 0.5;
+                }
+                
+                // Hit test logic (like official WebXR sample)
+                if (frame && renderer.xr.isPresenting) {
+                    const session = renderer.xr.getSession();
+                    
+                    if (session.mode === 'immersive-ar' && !cubePlaced) {
+                        // Hide reticle by default
+                        reticle.visible = false;
+                        
+                        if (hitTestSource && localReferenceSpace) {
+                            const hitTestResults = frame.getHitTestResults(hitTestSource);
+                            
+                            if (hitTestResults.length > 0) {
+                                const hit = hitTestResults[0];
+                                const pose = hit.getPose(localReferenceSpace);
+                                
+                                // Show reticle at hit location
+                                reticle.visible = true;
+                                reticle.matrix.fromArray(pose.transform.matrix);
+                                
+                                // Update instructions
+                                if (document.getElementById('instructions').innerHTML.includes('Move your device')) {
+                                    document.getElementById('instructions').innerHTML = '<p>✅ Surface found! Tap to place cube</p>';
+                                }
+                                
+                                console.log('Hit test success - reticle visible');
+                            }
+                        }
+                    }
+                }
+                
+                renderer.render(scene, camera);
+            });
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Initialize
+        loadState();
+        checkUnityStatus();
+        setInterval(checkUnityStatus, 3000);
+        animate();
+
+        // Set initial color preview
+        document.getElementById('colorPreview').style.backgroundColor = colors[currentColorIndex];
+    </script>
+</body>
+</html>

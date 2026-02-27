@@ -1,0 +1,15 @@
+{
+  "name": "http-smart-controller-xr",
+  "version": "1.0.0",
+  "description": "WebXR AR button click controller with Unity integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "author": "",
+  "license": "MIT"
+}
